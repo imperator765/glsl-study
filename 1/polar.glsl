@@ -20,8 +20,21 @@ vec2 pol2xy(vec2 pol){
     return pol.y*vec2(cos(pol.x), sin(pol.x));
 }
 
-void main(){
+vec3 tex(vec2 st){
+    vec3[3] col3 = vec3[](
+        vec3(1.0, 0.0, 0.0),
+        vec3(0.0, 0.0, 1.0),
+        vec3(1.0)
+    );
+    st.s=st.s/PI+1.0;
+    int ind=int(st.s);
+    vec3 col=mix(col3[ind%2], col3[(ind+1)%2], fract(st.s));
+    return mix(col3[2], col, st.t);
+}
 
+void main(){
     vec2 pos = gl_FragCoord.xy / u_resolution.xy;
-    fragColor = vec4(1.0, pos, 1.0);
+    pos=2.0*pos.xy-vec2(1.0);
+    pos=xy2pol(pos);
+    fragColor = vec4(tex(pos), 1);
 }
